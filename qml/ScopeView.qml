@@ -224,7 +224,7 @@ ChartView {
         id: lineSeries4
         name: "Ch 4"
         axisX: axisX
-        axisYRight: axisY3
+        axisYRight: axisY4
         useOpenGL: chartView.openGL
     }
 
@@ -295,65 +295,25 @@ ChartView {
             refreshTimer.running = true
         }
     }
-    function changeYscale(scale, seriesIndex) {
-        var axisValue = {x: 0, y: 0};
-
-        switch( scale )
-        {
-        case "10bit":
-            axisValue.min = -512
-            axisValue.max = 512
-            break;
-        case "12bit":
-            axisValue.min = -2048
-            axisValue.max = 2048
-            break;
-        case "14bit":
-            axisValue.min = -8192
-            axisValue.max = 8192
-            break;
-        case "15bit":
-            axisValue.min = -16384
-            axisValue.max = 16384
-            break;
-        case "16bit":
-            axisValue.min = -32768
-            axisValue.max = 32768
-            break;
-        case "17bit":
-            axisValue.min = -65536
-            axisValue.max = 65536
-            break;
-        case "18bit":
-            axisValue.min = -131072
-            axisValue.max = 131072
-            break;
-        case "19bit":
-            axisValue.min = -262144
-            axisValue.max = 262144
-            break;
-        case "20bit":
-            axisValue.min = -524287
-            axisValue.max = 524287
-            break;
-        }
+    function changeYscale(maxY, minY, seriesIndex) {
 
         switch( seriesIndex )
         {
         case 0:
-            axisY1.min = axisValue.min
-            axisY1.max = axisValue.max
+            axisY1.max = parseInt(maxY)
+            axisY1.min = parseInt(minY)
             break;
         case 1:
-            axisY2.min = axisValue.min
-            axisY2.max = axisValue.max
+            axisY2.max = parseInt(maxY)
+            axisY2.min = parseInt(minY)
            break;
         case 2:
-            axisY3.min = axisValue.min
-            axisY3.max = axisValue.max
-        case 2:
-            axisY4.min = axisValue.min
-            axisY4.max = axisValue.max
+            axisY3.max = parseInt(maxY)
+            axisY3.min = parseInt(minY)
+            break;
+        case 3:
+            axisY4.max = parseInt(maxY)
+            axisY4.min = parseInt(minY)
            break;
 
         }

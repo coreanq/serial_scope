@@ -28,7 +28,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.leftMargin: 10
-        width: 300
+        width: 500
 //![1]
 
         onSignalSourceChanged: {
@@ -36,7 +36,7 @@ Item {
         }
         onSeriesTypeChanged: scopeView.changeSeriesType(type);
         onPlayTypeChanged: scopeView.changePlayType(type);
-        onYScaleChanged: scopeView.changeYscale(scale, seriesIndex);
+        onYScaleChanged: scopeView.changeYscale(maxY, minY, seriesIndex);
     }
     onSigSerialPortError: {
         console.log("fail");

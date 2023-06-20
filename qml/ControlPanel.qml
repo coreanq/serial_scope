@@ -38,10 +38,49 @@ Item {
     signal seriesTypeChanged(string type)
     signal signalSourceChanged(int sampleCount);
     signal playTypeChanged(string type);
-    signal yScaleChanged(string scale, int seriesIndex);
+    signal yScaleChanged(string maxY, string minY, int seriesIndex);
+    signal yOffsetChanged(string offset, int seriesIndex);
 
     property bool isOpen : false
     property Item optionHideItem : null
+
+    property string ch1MaxY: "100000"
+    property string ch1MinY: "-100000"
+    property string ch2MaxY: "100000"
+    property string ch2MinY: "-100000"
+    property string ch3MaxY: "100000"
+    property string ch3MinY: "-100000"
+    property string ch4MaxY: "100000"
+    property string ch4MinY: "-100000"
+
+    Component.onCompleted: {
+        yScaleChanged(
+            ch1MaxY, ch1MinY, 0
+        );
+        yScaleChanged(
+            ch2MaxY, ch2MinY, 1
+        );
+        yScaleChanged(
+            ch3MaxY, ch3MinY, 2
+        );
+        yScaleChanged(
+            ch4MaxY, ch4MinY, 3
+        );
+
+        yOffsetChanged(
+                "0",  0
+        );
+        yOffsetChanged(
+                "0",  1
+        );
+        yOffsetChanged(
+                "0",  2
+        );
+        yOffsetChanged(
+                "0",  3
+        );
+    }
+
     LinearGradient {
            anchors.fill: parent
            start: Qt.point(0, 0)
@@ -215,7 +254,7 @@ Item {
 
         GridLayout {
             id: gridOption
-            columns: 3
+            columns: 4
             columnSpacing:5
             rowSpacing:5
 
@@ -242,6 +281,8 @@ Item {
                     playTypeChanged(items[currentSelection])
                 }
 
+            }
+            Text {
             }
             Text {
             }
@@ -281,9 +322,13 @@ Item {
             }
             Text {
             }
+            Text {
+            }
 
 
             ////////////////////////////////////////////////////////////////////////////////////
+            Text {
+            }
             Text {
             }
             Text {
@@ -295,16 +340,21 @@ Item {
             // header start
             Text {
                 id: txtHeader1
-                text: "Type"
+                text: "Chnnel"
                 color: "white"
             }
             Text {
                 id: txtHeader2
-                text: "Scale"
+                text: "Max Y"
                 color: "white"
             }
             Text {
                 id: txtHeader3
+                text: "Min Y"
+                color: "white"
+            }
+            Text {
+                id: txtHeader4
                 text: "Offset"
                 color: "white"
             }
@@ -312,37 +362,37 @@ Item {
 
 
             ////////////////////////////////////////////////////////////////////////////////////
-            // "Ch2 Y Scale signed: "
+            // "Ch1 Y Scale signed:
             Text {
-                id: txtscaleCh1Yaxis
                 text: "Ch1"
                 color: "white"
             }
-            ComboBox {
-                id: scaleChA1Yaxis
-                enabled: isOpen
+            TextInput {
+                text: ch1MaxY
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
+                onAccepted: {
+                    ch1MaxY = text;
+                    yScaleChanged(
+                            ch1MaxY, ch1MinY, 0
+                    );
                 }
-                model: ["10bit", "12bit", "14bit","15bit", "16bit", "17bit",  "18bit", "19bit", "20bit" ]
-                onCurrentIndexChanged: yScaleChanged(
-                                        model[currentIndex], 0
-                                        );
-                Component.onCompleted: {
-                    currentIndex = 0
-                    yScaleChanged(model[currentIndex], 0)
+            }
+            TextInput {
+                text: "-100000"
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
+
+                onAccepted: {
+                    ch1MinY = text;
+                    yScaleChanged(
+                            ch1MaxY, ch1MinY, 0
+                    );
                 }
             }
             TextInput {
                 text: "0"
-                maximumLength: 7
                 color:"white"
 
                 validator: IntValidator{bottom: -1000000; top: 1000000;}
@@ -353,47 +403,41 @@ Item {
                                 text,  0
                         );
                 }
-                Component.onCompleted: {
-                        yOffsetChanged(
-                                text,  0
-                        );
-
-                }
             }
 
-
             ////////////////////////////////////////////////////////////////////////////////////
-            // "Ch2 Y Scale signed: "
+            // "Ch2 Y Scale signed:
             Text {
-                id: txtscaleCh2Yaxis
                 text: "Ch2"
                 color: "white"
             }
-            ComboBox {
-                id: scale2Yaxis
-                enabled: isOpen
+            TextInput {
+                text: ch2MaxY
+                color:"white"
 
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
+
+                onAccepted: {
+                    ch2MaxY = text;
+                    yScaleChanged(
+                            ch2MaxY, ch2MinY, 1
+                    );
                 }
-                model: ["10bit", "12bit", "14bit","15bit", "16bit", "17bit",  "18bit", "19bit", "20bit" ]
-                onCurrentIndexChanged: yScaleChanged(
-                                        model[currentIndex], 1
-                                        );
-                Component.onCompleted: {
-                    currentIndex = 0
-                    yScaleChanged(model[currentIndex], 1)
+            }
+            TextInput {
+                text: "-100000"
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
+
+                onAccepted: {
+                    ch2MinY = text;
+                    yScaleChanged(
+                            ch2MaxY, ch2MinY, 1
+                    );
                 }
             }
             TextInput {
                 text: "0"
-                maximumLength: 7
                 color:"white"
 
                 validator: IntValidator{bottom: -1000000; top: 1000000;}
@@ -404,47 +448,40 @@ Item {
                                 text,  1
                         );
                 }
-                Component.onCompleted: {
-                        yOffsetChanged(
-                                text,  1
-                        );
-
-                }
             }
 
             ////////////////////////////////////////////////////////////////////////////////////
-            // "CH3 Y Scale signed: "
+            // "Ch3 Y Scale signed:
             Text {
-                id: txtscaleCh3Yaxis
                 text: "Ch3"
                 color: "white"
             }
-            ComboBox {
-                id: scaleCh3Yaxis
-                enabled: isOpen
+            TextInput {
+                text: ch1MaxY
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
-                }
-                model: ["10bit", "12bit", "14bit","15bit", "16bit", "17bit",  "18bit", "19bit", "20bit" ]
-                onCurrentIndexChanged: yScaleChanged(
-                                        model[currentIndex], 2
-                                        );
-                Component.onCompleted: {
-                    currentIndex = 0
-                    yScaleChanged(model[currentIndex], 2)
+                onAccepted: {
+                    ch3MaxY = text;
+                    yScaleChanged(
+                            ch3MaxY, ch3MinY, 2
+                    );
                 }
             }
+            TextInput {
+                text: "-100000"
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
 
+                onAccepted: {
+                    ch3MinY = text;
+                    yScaleChanged(
+                            ch3MaxY, ch3MinY, 2
+                    );
+                }
+            }
             TextInput {
                 text: "0"
-                maximumLength: 7
                 color:"white"
 
                 validator: IntValidator{bottom: -1000000; top: 1000000;}
@@ -455,46 +492,40 @@ Item {
                                 text,  2
                         );
                 }
-                Component.onCompleted: {
-                        yOffsetChanged(
-                                text,  2
-                        );
-
-                }
             }
+
             ////////////////////////////////////////////////////////////////////////////////////
-            // "CH4 Y Scale signed: "
+            // "Ch4 Y Scale signed:
             Text {
-                id: txtscaleCh4Yaxis
                 text: "Ch4"
                 color: "white"
             }
-            ComboBox {
-                id: scaleCh4Yaxis
-                enabled: isOpen
+            TextInput {
+                text: ch1MaxY
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
-                }
-                model: ["10bit", "12bit", "14bit","15bit", "16bit", "17bit",  "18bit", "19bit", "20bit" ]
-                onCurrentIndexChanged: yScaleChanged(
-                                        model[currentIndex], 2
-                                        );
-                Component.onCompleted: {
-                    currentIndex = 0
-                    yScaleChanged(model[currentIndex], 2)
+                onAccepted: {
+                    ch4MaxY = text;
+                    yScaleChanged(
+                            ch4MaxY, ch4MinY, 3
+                    );
                 }
             }
+            TextInput {
+                text: "-100000"
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
 
+                onAccepted: {
+                    ch4MinY = text;
+                    yScaleChanged(
+                            ch4MaxY, ch4MinY, 3
+                    );
+                }
+            }
             TextInput {
                 text: "0"
-                maximumLength: 7
                 color:"white"
 
                 validator: IntValidator{bottom: -1000000; top: 1000000;}
@@ -502,14 +533,8 @@ Item {
                         if( text == "" )
                             text = "0"
                         yOffsetChanged(
-                                text,  2
+                                text,  3
                         );
-                }
-                Component.onCompleted: {
-                        yOffsetChanged(
-                                text,  2
-                        );
-
                 }
             }
 
