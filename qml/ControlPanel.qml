@@ -380,7 +380,7 @@ Item {
                 }
             }
             TextInput {
-                text: "-100000"
+                text: ch1MinY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
@@ -425,7 +425,7 @@ Item {
                 }
             }
             TextInput {
-                text: "-100000"
+                text: ch2MinY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
@@ -457,7 +457,7 @@ Item {
                 color: "white"
             }
             TextInput {
-                text: ch1MaxY
+                text: ch3MaxY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
@@ -469,7 +469,7 @@ Item {
                 }
             }
             TextInput {
-                text: "-100000"
+                text: ch3MinY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
@@ -501,7 +501,7 @@ Item {
                 color: "white"
             }
             TextInput {
-                text: ch1MaxY
+                text: ch4MaxY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
@@ -513,7 +513,7 @@ Item {
                 }
             }
             TextInput {
-                text: "-100000"
+                text: ch4MinY
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
