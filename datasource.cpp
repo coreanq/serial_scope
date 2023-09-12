@@ -175,7 +175,7 @@ void DataSource::readData()
                 if( m_serial->bytesAvailable() >= CHANNEL_COUNT * 4 )
                 {
                     char buffer[CHANNEL_COUNT * 4] = {0,};
-                    int32_t data[CHANNEL_COUNT] = {0,};
+                    float data[CHANNEL_COUNT] = {0,};
                     m_serial->read(buffer, 12 );
                     memcpy(&data[0], &buffer[0], sizeof(data));
                     memcpy(&data[1], &buffer[4], sizeof(data));
@@ -215,7 +215,7 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
             for( int i = 0 ; i < m_screenXCount; i ++ ) {
                 QPoint pt;
                 pt.setX(i);
-                pt.setY(m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] );
+                pt.setY( ( m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] )  * m_yScales[lineIndex] );
                 m_points[lineIndex].append(pt);
             }
         }
@@ -225,7 +225,7 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
                 pt.setX(i);
                 if( i >= m_screenXCount - dataTotalCount)
                 {
-                    pt.setY(m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] );
+                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] )  * m_yScales[lineIndex] );
                 }
                 else
                 {
@@ -240,4 +240,9 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
 void DataSource::yOffsetChanged(QString offset, int lineIndex)
 {
     m_yOffsets[lineIndex] = offset.toInt();
+}
+
+void DataSource::yScaleChanged(QString scale, int lineIndex)
+{
+    m_yScales[lineIndex] = scale.toInt();
 }

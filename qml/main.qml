@@ -4,8 +4,8 @@ import QtQuick 2.0
 //![1]
 Item {
     id: main
-    width: 600
-    height: 400
+    width: 1280
+    height: 800
     signal sigSerialPortError()
     signal sigSerialPortOpenSuccess()
 
@@ -15,6 +15,7 @@ Item {
         dataSource.sigSerialPortOpenSuccess.connect(sigSerialPortOpenSuccess)
         controlPanel.signalSourceChanged.connect(dataSource.onSourceChanged)
         controlPanel.yOffsetChanged.connect(dataSource.yOffsetChanged)
+        controlPanel.yScaleChanged.connect(dataSource.yScaleChanged)
         scopeView.zoomInClicked.connect(controlPanel.onZoomInClicked)
         scopeView.zoomResetClicked.connect(controlPanel.onZoomResetClicked)
 
@@ -36,7 +37,7 @@ Item {
         }
         onSeriesTypeChanged: scopeView.changeSeriesType(type);
         onPlayTypeChanged: scopeView.changePlayType(type);
-        onYScaleChanged: scopeView.changeYscale(maxY, minY, seriesIndex);
+        onYMinMaxChanged: scopeView.changeYMinMax(maxY, minY, seriesIndex);
     }
     onSigSerialPortError: {
         console.log("fail");

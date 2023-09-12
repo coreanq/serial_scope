@@ -38,7 +38,8 @@ Item {
     signal seriesTypeChanged(string type)
     signal signalSourceChanged(int sampleCount);
     signal playTypeChanged(string type);
-    signal yScaleChanged(string maxY, string minY, int seriesIndex);
+    signal yMinMaxChanged(string maxY, string minY, int seriesIndex);
+    signal yScaleChanged(string scale, int seriesIndex);
     signal yOffsetChanged(string offset, int seriesIndex);
 
     property bool isOpen : false
@@ -53,19 +54,41 @@ Item {
     property string ch4MaxY: "100000"
     property string ch4MinY: "-100000"
 
+    function onZoomInClicked()
+    {
+        gridOption.enabled = false
+    }
+
+    function onZoomResetClicked()
+    {
+        gridOption.enabled = true
+    }
+
     Component.onCompleted: {
-        yScaleChanged(
+        yMinMaxChanged(
             ch1MaxY, ch1MinY, 0
         );
-        yScaleChanged(
+        yMinMaxChanged(
             ch2MaxY, ch2MinY, 1
         );
-        yScaleChanged(
+        yMinMaxChanged(
             ch3MaxY, ch3MinY, 2
         );
-        yScaleChanged(
+        yMinMaxChanged(
             ch4MaxY, ch4MinY, 3
         );
+        yScaleChanged(
+                    '1', 0
+        )
+        yScaleChanged(
+                    '1', 1
+        )
+        yScaleChanged(
+                    '1', 2
+        )
+        yScaleChanged(
+                    '1', 3
+        )
 
         yOffsetChanged(
                 "0",  0
@@ -132,15 +155,6 @@ Item {
         }
 
 
-        function onZoomInClicked()
-        {
-            gridOption.enabled = false
-        }
-
-        function onZoomResetClicked()
-        {
-            gridOption.enabled = true
-        }
 
         RowLayout{
             Button {
@@ -254,7 +268,7 @@ Item {
 
         GridLayout {
             id: gridOption
-            columns: 4
+            columns: 5
             columnSpacing:5
             rowSpacing:5
 
@@ -281,6 +295,8 @@ Item {
                     playTypeChanged(items[currentSelection])
                 }
 
+            }
+            Text {
             }
             Text {
             }
@@ -324,9 +340,13 @@ Item {
             }
             Text {
             }
+            Text {
+            }
 
 
             ////////////////////////////////////////////////////////////////////////////////////
+            Text {
+            }
             Text {
             }
             Text {
@@ -355,6 +375,11 @@ Item {
             }
             Text {
                 id: txtHeader4
+                text: "scale"
+                color: "white"
+            }
+            Text {
+                id: txtHeader5
                 text: "Offset"
                 color: "white"
             }
@@ -374,7 +399,7 @@ Item {
 
                 onAccepted: {
                     ch1MaxY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch1MaxY, ch1MinY, 0
                     );
                 }
@@ -386,9 +411,22 @@ Item {
 
                 onAccepted: {
                     ch1MinY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch1MaxY, ch1MinY, 0
                     );
+                }
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  0
+                        );
                 }
             }
             TextInput {
@@ -419,7 +457,7 @@ Item {
 
                 onAccepted: {
                     ch2MaxY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch2MaxY, ch2MinY, 1
                     );
                 }
@@ -431,9 +469,22 @@ Item {
 
                 onAccepted: {
                     ch2MinY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch2MaxY, ch2MinY, 1
                     );
+                }
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  1
+                        );
                 }
             }
             TextInput {
@@ -463,7 +514,7 @@ Item {
 
                 onAccepted: {
                     ch3MaxY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch3MaxY, ch3MinY, 2
                     );
                 }
@@ -475,9 +526,22 @@ Item {
 
                 onAccepted: {
                     ch3MinY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch3MaxY, ch3MinY, 2
                     );
+                }
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  2
+                        );
                 }
             }
             TextInput {
@@ -507,7 +571,7 @@ Item {
 
                 onAccepted: {
                     ch4MaxY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch4MaxY, ch4MinY, 3
                     );
                 }
@@ -519,9 +583,22 @@ Item {
 
                 onAccepted: {
                     ch4MinY = text;
-                    yScaleChanged(
+                    yMinMaxChanged(
                             ch4MaxY, ch4MinY, 3
                     );
+                }
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  3
+                        );
                 }
             }
             TextInput {

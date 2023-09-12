@@ -61,6 +61,7 @@ signals:
 public slots:
     void update(QAbstractSeries *series, int lineIndex);
     void yOffsetChanged(QString offset, int lineIndex);
+    void yScaleChanged(QString scale, int lineIndex);
 
     void readData();
     QStringList availablePorts();
@@ -72,9 +73,10 @@ public slots:
 private:
     QQuickView *m_appViewer;
     QSerialPort* m_serial;
-    QQueue<int32_t> m_data[CHANNEL_COUNT];
+    QQueue<float> m_data[CHANNEL_COUNT];
     QVector<QPointF> m_points[CHANNEL_COUNT];
     int				m_yOffsets[CHANNEL_COUNT];
+    int				m_yScales[CHANNEL_COUNT];
     QStringListModel m_modelSerialList;
     int 		     m_screenXCount;
 };

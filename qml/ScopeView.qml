@@ -91,7 +91,7 @@ ChartView {
             }
             Text{
                 id: da4_value
-                text: "Ch4: " + da3_str
+                text: "Ch4: " + da4_str
                 color: "yellow"
                 font.bold: true
             }
@@ -137,10 +137,15 @@ ChartView {
             var da1 = chartView.mapToValue(currentMousePoint, lineSeries1)
             var da2 = chartView.mapToValue(currentMousePoint, lineSeries2)
             var da3 = chartView.mapToValue(currentMousePoint, lineSeries3)
+            var da4 = chartView.mapToValue(currentMousePoint, lineSeries4)
+//            console.log( da1.x)
+//            console.log( lineSeries1.at( da1.x) )
+//            console.log( lineSeries1.at( da1.x).x )
 
-            chartCoodinateItem.da1_str =  Math.floor(da1.y).toString()
-            chartCoodinateItem.da2_str =  Math.floor(da2.y).toString()
-            chartCoodinateItem.da3_str =  Math.floor(da3.y).toString()
+            chartCoodinateItem.da1_str =  Math.floor(lineSeries1.at( da1.x).y ).toString()
+            chartCoodinateItem.da2_str =  Math.floor(lineSeries2.at( da2.x).y ).toString()
+            chartCoodinateItem.da3_str =  Math.floor(lineSeries3.at( da3.x).y ).toString()
+            chartCoodinateItem.da4_str =  Math.floor(lineSeries4.at( da4.x).y ).toString()
         }
         onReleased: {
         // here you can add you zooming stuff if you want
@@ -295,7 +300,7 @@ ChartView {
             refreshTimer.running = true
         }
     }
-    function changeYscale(maxY, minY, seriesIndex) {
+    function changeYMinMax(maxY, minY, seriesIndex) {
 
         switch( seriesIndex )
         {
