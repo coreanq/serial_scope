@@ -139,13 +139,13 @@ ChartView {
             var da3 = chartView.mapToValue(currentMousePoint, lineSeries3)
             var da4 = chartView.mapToValue(currentMousePoint, lineSeries4)
 //            console.log( da1.x)
-//            console.log( lineSeries1.at( da1.x) )
-//            console.log( lineSeries1.at( da1.x).x )
+//            console.log( lineSeries1.at( da1.x).y )
 
-            chartCoodinateItem.da1_str =  Math.floor(lineSeries1.at( da1.x).y ).toString()
-            chartCoodinateItem.da2_str =  Math.floor(lineSeries2.at( da2.x).y ).toString()
-            chartCoodinateItem.da3_str =  Math.floor(lineSeries3.at( da3.x).y ).toString()
-            chartCoodinateItem.da4_str =  Math.floor(lineSeries4.at( da4.x).y ).toString()
+            // 소숫점 2자리로 끊어냄
+            chartCoodinateItem.da1_str =  ( Math.round(lineSeries1.at( da1.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da2_str =  ( Math.round(lineSeries2.at( da2.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da3_str =  ( Math.round(lineSeries3.at( da3.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da4_str =  ( Math.round(lineSeries4.at( da4.x).y * 100 ) /100).toString()
         }
         onReleased: {
         // here you can add you zooming stuff if you want

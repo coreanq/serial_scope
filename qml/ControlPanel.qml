@@ -332,7 +332,7 @@ Item {
                                         model[currentIndex]
                                         );
                 Component.onCompleted: {
-                    currentIndex = 5
+                    currentIndex = 7
                     signalSourceChanged(model[currentIndex])
                 }
             }

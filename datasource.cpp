@@ -184,9 +184,6 @@ void DataSource::readData()
 
                     for (int i = 0; i < CHANNEL_COUNT; i ++ )
                     {
-                        if( m_data[i].size() >= maxSamplingCount ) {
-                            m_data[i].removeFirst();
-                        }
                         m_data[i].append(data[i]);
                     }
 
@@ -211,9 +208,20 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
         m_points[lineIndex].clear();
         int32_t dataTotalCount = m_data[lineIndex].size();
 
+        if( dataTotalCount > maxSamplingCount - 10000 )
+        {
+            auto start_iter = m_data[lineIndex].begin();
+            auto end_iter = start_iter + 10000;
+
+            m_data[lineIndex].erase( start_iter, end_iter);
+            dataTotalCount = m_data[lineIndex].size();
+            qDebug() << m_data[lineIndex].size();
+        }
+
+
         if( m_data[lineIndex].size() >= m_screenXCount ) {
             for( int i = 0 ; i < m_screenXCount; i ++ ) {
-                QPoint pt;
+                QPointF pt;
                 pt.setX(i);
                 pt.setY( ( m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] )  * m_yScales[lineIndex] );
                 m_points[lineIndex].append(pt);
@@ -221,11 +229,11 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
         }
         else {
             for( int i = 0 ; i < m_screenXCount ; i ++ ) {
-                QPoint pt;
+                QPointF pt;
                 pt.setX(i);
                 if( i >= m_screenXCount - dataTotalCount)
                 {
-                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] )  * m_yScales[lineIndex] );
+                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] )  * m_yScales[lineIndex] ) ;
                 }
                 else
                 {
