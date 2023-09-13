@@ -390,7 +390,7 @@ Item {
             // "Ch1 Y Scale signed:
             Text {
                 text: "Ch1"
-                color: "white"
+                color: "gray"
             }
             TextInput {
                 text: ch1MaxY
@@ -399,23 +399,17 @@ Item {
 
                 onAccepted: {
                     ch1MaxY = text;
+                    ch1MinY = '-' + text;
                     yMinMaxChanged(
                             ch1MaxY, ch1MinY, 0
                     );
                 }
             }
-            TextInput {
+            Text {
                 text: ch1MinY
-                color:"white"
-                validator: IntValidator{bottom: -10000000; top: 10000000;}
-
-                onAccepted: {
-                    ch1MinY = text;
-                    yMinMaxChanged(
-                            ch1MaxY, ch1MinY, 0
-                    );
-                }
+                color:"gray"
             }
+
             TextInput {
                 text: "1"
                 color:"white"
@@ -447,7 +441,7 @@ Item {
             // "Ch2 Y Scale signed:
             Text {
                 text: "Ch2"
-                color: "white"
+                color: "gray"
             }
             TextInput {
                 text: ch2MaxY
@@ -457,22 +451,15 @@ Item {
 
                 onAccepted: {
                     ch2MaxY = text;
+                    ch2MinY = '-' + text;
                     yMinMaxChanged(
                             ch2MaxY, ch2MinY, 1
                     );
                 }
             }
-            TextInput {
+            Text {
                 text: ch2MinY
-                color:"white"
-                validator: IntValidator{bottom: -10000000; top: 10000000;}
-
-                onAccepted: {
-                    ch2MinY = text;
-                    yMinMaxChanged(
-                            ch2MaxY, ch2MinY, 1
-                    );
-                }
+                color:"gray"
             }
             TextInput {
                 text: "1"
@@ -505,7 +492,7 @@ Item {
             // "Ch3 Y Scale signed:
             Text {
                 text: "Ch3"
-                color: "white"
+                color: "gray"
             }
             TextInput {
                 text: ch3MaxY
@@ -514,22 +501,15 @@ Item {
 
                 onAccepted: {
                     ch3MaxY = text;
+                    ch3MinY = '-' + text;
                     yMinMaxChanged(
                             ch3MaxY, ch3MinY, 2
                     );
                 }
             }
-            TextInput {
+            Text {
                 text: ch3MinY
-                color:"white"
-                validator: IntValidator{bottom: -10000000; top: 10000000;}
-
-                onAccepted: {
-                    ch3MinY = text;
-                    yMinMaxChanged(
-                            ch3MaxY, ch3MinY, 2
-                    );
-                }
+                color:"gray"
             }
             TextInput {
                 text: "1"
@@ -562,7 +542,7 @@ Item {
             // "Ch4 Y Scale signed:
             Text {
                 text: "Ch4"
-                color: "white"
+                color: "gray"
             }
             TextInput {
                 text: ch4MaxY
@@ -571,6 +551,7 @@ Item {
 
                 onAccepted: {
                     ch4MaxY = text;
+                    ch4MinY = '-' + text;
                     yMinMaxChanged(
                             ch4MaxY, ch4MinY, 3
                     );
@@ -578,15 +559,7 @@ Item {
             }
             TextInput {
                 text: ch4MinY
-                color:"white"
-                validator: IntValidator{bottom: -10000000; top: 10000000;}
-
-                onAccepted: {
-                    ch4MinY = text;
-                    yMinMaxChanged(
-                            ch4MaxY, ch4MinY, 3
-                    );
-                }
+                color:"gray"
             }
             TextInput {
                 text: "1"

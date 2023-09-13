@@ -211,11 +211,11 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
         if( dataTotalCount > maxSamplingCount - 10000 )
         {
             auto start_iter = m_data[lineIndex].begin();
-            auto end_iter = start_iter + 10000;
+            auto end_iter = start_iter + 300000;
 
             m_data[lineIndex].erase( start_iter, end_iter);
             dataTotalCount = m_data[lineIndex].size();
-            qDebug() << m_data[lineIndex].size();
+            qDebug() << lineIndex <<  m_data[lineIndex].size();
         }
 
 
