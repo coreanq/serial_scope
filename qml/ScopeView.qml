@@ -238,7 +238,7 @@ ChartView {
     //![2]
     Timer {
         id: refreshTimer
-        interval: 1 / 30 * 1000 // ? Hz
+        interval: 1 / 15 * 1000 // ? Hz
         running: true
         repeat: true
         onTriggered: {

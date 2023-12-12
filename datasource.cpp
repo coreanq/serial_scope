@@ -49,7 +49,8 @@ enum {
     STEP1,
     STEP2,
     STEP3,
-    STEP8
+    STEP4,
+    PROCESSING,
 };
 
 
@@ -131,15 +132,17 @@ void DataSource::onSerialPortError(QSerialPort::SerialPortError error)
 }
 void DataSource::readData()
 {
-    char oneByte = 0x00;
+    uint8_t oneByte = 0x00;
     static uint8_t state = 0;
-    while(m_serial->bytesAvailable() )
+    static uint8_t data_count = 0;
+    static char buffer[CHANNEL_COUNT * 4 + 1] = {0,};
+    while( m_serial->bytesAvailable() )
     {
-        m_serial->read((char*)&oneByte, 1);
 
         switch( state )
         {
         case STEP1:
+            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
                 state = STEP2;
@@ -150,6 +153,7 @@ void DataSource::readData()
             }
             break;
         case STEP2:
+            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
                 state = STEP3;
@@ -160,39 +164,62 @@ void DataSource::readData()
             }
             break;
         case STEP3:
+            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
-                state = STEP8;
+                state = STEP4;
             }
             else
             {
                 state = STEP1;
             }
             break;
-        case STEP8:
+        case STEP4:
+            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xab )
             {
-                if( m_serial->bytesAvailable() >= CHANNEL_COUNT * 4 )
-                {
-                    char buffer[CHANNEL_COUNT * 4] = {0,};
-                    float data[CHANNEL_COUNT] = {0,};
-                    m_serial->read(buffer, 12 );
-                    memcpy(&data[0], &buffer[0], sizeof(data));
-                    memcpy(&data[1], &buffer[4], sizeof(data));
-                    memcpy(&data[2], &buffer[8], sizeof(data));
-                    memcpy(&data[3], &buffer[12], sizeof(data));
-
-                    for (int i = 0; i < CHANNEL_COUNT; i ++ )
-                    {
-                        m_data[i].append(data[i]);
-                    }
-
-                    state = STEP1;
-                }
+                state = PROCESSING;
             }
             else
             {
                 state = STEP1;
+            }
+            break;
+        case PROCESSING:
+
+            m_serial->read((char*)&oneByte, 1);
+            buffer[data_count++] = (char)oneByte;
+
+            if( data_count == CHANNEL_COUNT * 4 + 1)
+            {
+                state = STEP1;
+                data_count = 0;
+
+                float data[CHANNEL_COUNT] = {0,};
+                memcpy(&data[0], &buffer[0], 16);
+
+                uint8_t calculate_sum = 0;
+                uint8_t sum = buffer[16];
+
+                for(uint8_t cnt= 0; cnt < CHANNEL_COUNT * 4; cnt ++ )
+                {
+                    calculate_sum += buffer[cnt];
+                }
+
+                if( sum != calculate_sum )
+                {
+                    qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3];
+                }
+                else
+                {
+                    for (int i = 0; i < CHANNEL_COUNT; i ++ )
+                    {
+                        m_data[i].append(data[i]);
+                    }
+                }
+
+//                if( data[2] > 700.f || data[2] < -700.f  )
+
             }
             break;
         default:
@@ -205,7 +232,8 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
     if (series) {
         QXYSeries *xySeries = static_cast<QXYSeries *>(series);
         // Use replace instead of clear + append, it's optimized for performance
-        m_points[lineIndex].clear();
+        m_points[lineIndex].resize(m_screenXCount);
+        m_points[lineIndex].fill( QPointF(0,0) );
         int32_t dataTotalCount = m_data[lineIndex].size();
 
         if( dataTotalCount > maxSamplingCount - 10000 )
@@ -215,7 +243,7 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
 
             m_data[lineIndex].erase( start_iter, end_iter);
             dataTotalCount = m_data[lineIndex].size();
-            qDebug() << lineIndex <<  m_data[lineIndex].size();
+//            qDebug() << lineIndex <<  m_data[lineIndex].size();
         }
 
 
@@ -224,7 +252,7 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
                 QPointF pt;
                 pt.setX(i);
                 pt.setY( ( m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] )  * m_yScales[lineIndex] );
-                m_points[lineIndex].append(pt);
+                m_points[lineIndex].replace(i, pt);
             }
         }
         else {
@@ -239,7 +267,8 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
                 {
                     pt.setY(0);
                 }
-                m_points[lineIndex].append(pt);
+                m_points[lineIndex].replace(i, pt);
+//                m_points[lineIndex].append(pt);
             }
         }
         xySeries->replace(m_points[lineIndex]);

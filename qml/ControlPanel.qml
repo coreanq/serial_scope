@@ -45,14 +45,14 @@ Item {
     property bool isOpen : false
     property Item optionHideItem : null
 
-    property string ch1MaxY: "100000"
-    property string ch1MinY: "-100000"
-    property string ch2MaxY: "100000"
-    property string ch2MinY: "-100000"
-    property string ch3MaxY: "100000"
-    property string ch3MinY: "-100000"
-    property string ch4MaxY: "100000"
-    property string ch4MinY: "-100000"
+    property string ch1MaxY: "1000"
+    property string ch1MinY: "-1000"
+    property string ch2MaxY: "1000"
+    property string ch2MinY: "-1000"
+    property string ch3MaxY: "1000"
+    property string ch3MinY: "-1000"
+    property string ch4MaxY: "1000"
+    property string ch4MinY: "-1000"
 
     function onZoomInClicked()
     {
