@@ -113,14 +113,18 @@ Item {
                GradientStop { position: 1.0; color: "black" }
            }
        }
-        onIsOpenChanged: {
-            if( isOpen == true ) {
-                serialPortOpen.text = "close"
-            }
-            else {
-                serialPortOpen.text = "open"
-            }
+
+    onIsOpenChanged: {
+        if( isOpen == true ) {
+            serialPortOpen.visible = false
+            serialPortClose.visible = true
         }
+        else {
+            serialPortOpen.visible = true
+            serialPortClose.visible = false
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 8
@@ -142,15 +146,15 @@ Item {
             }
             var point = {}
             // create a new rectangle at the wanted position
-            optionHideItem = optionHideComponent.createObject (parent, {
-                "x" : 0,
-                "y" : 0,
-                "width" : gridOption.width,
-                "height" : gridOption.height
-            });
-            point = mapFromGlobal(optionHideItem.x, optionHideItem.y)
-            optionHideItem.x = point.x
-            optionHideItem.y = point.y
+//            optionHideItem = optionHideComponent.createObject (parent, {
+//                "x" : 0,
+//                "y" : 0,
+//                "width" : gridOption.width,
+//                "height" : gridOption.height
+//            });
+//            point = mapFromGlobal(optionHideItem.x, optionHideItem.y)
+//            optionHideItem.x = point.x
+//            optionHideItem.y = point.y
 
         }
 
@@ -164,8 +168,6 @@ Item {
 
                     if( isOpen == false ){
                         dataSource.open(serialPortName.currentText);
-
-
                     }
                 }
 
@@ -186,6 +188,7 @@ Item {
             Button {
                 id: serialPortClose
                 text: "close"
+                visible: false
                 onClicked: {
                     if( isOpen == true ){
                         dataSource.close(serialPortName.currentText);

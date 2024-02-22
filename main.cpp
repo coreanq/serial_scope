@@ -32,6 +32,7 @@
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlEngine>
 #include <QtCore/QDir>
+#include <QThread>
 #include "datasource.h"
 
 int main(int argc, char *argv[])
@@ -54,7 +55,15 @@ int main(int argc, char *argv[])
 
     viewer.setTitle(QStringLiteral("Serial Oscilloscope"));
 
-    DataSource dataSource(&viewer);
+    DataSource dataSource;
+//    QThread		*m_threadProcess = new QThread();
+//    dataSource.moveToThread(m_threadProcess);
+//    m_threadProcess->start();
+
+
+
+
+
     viewer.rootContext()->setContextProperty("dataSource", &dataSource);
 
     viewer.engine()->addImportPath("qrc:/");

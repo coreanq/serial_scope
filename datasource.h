@@ -36,6 +36,8 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QQueue>
 #include <QStringListModel>
+#include <QTimer>
+#include <QThread>
 
 
 #define CHANNEL_COUNT		4
@@ -46,11 +48,12 @@ QT_END_NAMESPACE
 
 QT_CHARTS_USE_NAMESPACE
 
+
 class DataSource : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataSource(QQuickView *appViewer, QObject *parent = 0);
+    explicit DataSource(QObject *parent = 0);
 
 Q_SIGNALS:
 signals:
@@ -58,22 +61,24 @@ signals:
     void sigSerialPortError();
 
 
-public slots:
-    void update(QAbstractSeries *series, int lineIndex);
-    void yOffsetChanged(QString offset, int lineIndex);
-    void yScaleChanged(QString scale, int lineIndex);
+public:
+    Q_INVOKABLE void update(QAbstractSeries *series, int lineIndex);
+    Q_INVOKABLE void yOffsetChanged(QString offset, int lineIndex);
+    Q_INVOKABLE void yScaleChanged(QString scale, int lineIndex);
 
-    void readData();
-    QStringList availablePorts();
-    void open(QString portName);
-    void close(QString portName);
-    void onSerialPortError(QSerialPort::SerialPortError error);
-    void onSourceChanged(int sampleCount);
+    Q_INVOKABLE void readData();
+    Q_INVOKABLE QStringList availablePorts();
+    Q_INVOKABLE void open(QString portName);
+    Q_INVOKABLE void close(QString portName);
+    Q_INVOKABLE void onSerialPortError(QSerialPort::SerialPortError error);
+    Q_INVOKABLE void onSourceChanged(int sampleCount);
+    Q_INVOKABLE void dataProcessing();
 
 private:
-    QQuickView *m_appViewer;
-    QSerialPort* m_serial;
+    QTimer 		m_timerBufferProcessing;
     QQueue<float> m_data[CHANNEL_COUNT];
+    QByteArray  m_serialBuffer;
+
     QVector<QPointF> m_points[CHANNEL_COUNT];
     int				m_yOffsets[CHANNEL_COUNT];
     int				m_yScales[CHANNEL_COUNT];

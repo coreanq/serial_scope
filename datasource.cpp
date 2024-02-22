@@ -36,6 +36,7 @@
 #include <QtCore/QRandomGenerator>
 #include <QtCore/QtMath>
 #include <QSerialPortInfo>
+#include <QTimer>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -54,21 +55,21 @@ enum {
 };
 
 
+QSerialPort* m_serial  = new QSerialPort();
 
-DataSource::DataSource(QQuickView *appViewer, QObject *parent) :
-    QObject(parent),
-    m_appViewer(appViewer)
+
+DataSource::DataSource(QObject *parent) :
+    QObject(parent)
 {
     qRegisterMetaType<QAbstractSeries*>();
     qRegisterMetaType<QAbstractAxis*>();
 
-
-    m_serial = new QSerialPort(this);
-
-    m_serial->setBaudRate(QSerialPort::Baud115200);
+    m_serial->setBaudRate(3000000);
     m_serial->setDataBits(QSerialPort::Data8);
     m_serial->setParity(QSerialPort::NoParity);
 
+    connect(m_serial, &QSerialPort::readyRead, this, &DataSource::readData);
+//    connect(m_serial, &QSerialPort::errorOccurred, this, &DataSource::onSerialPortError);
 
     for( int i = 0; i < CHANNEL_COUNT; i ++ )
     {
@@ -76,17 +77,19 @@ DataSource::DataSource(QQuickView *appViewer, QObject *parent) :
         m_points[i].reserve(maxSamplingCount);
         m_yOffsets[i] = 0;
     }
+    m_timerBufferProcessing.setInterval(100);
+
+    connect(&m_timerBufferProcessing, &QTimer::timeout, this, &DataSource::dataProcessing );
+
 }
 
 void DataSource::open(QString portName)
 {
     m_serial->setPortName(portName);
-    m_serial->setBaudRate(3000000);
-
     if (m_serial->open(QIODevice::ReadWrite)) {
-        connect(m_serial, &QSerialPort::readyRead, this, &DataSource::readData);
-        connect(m_serial, &QSerialPort::errorOccurred, this, &DataSource::onSerialPortError);
         emit sigSerialPortOpenSuccess();
+        m_timerBufferProcessing.start();
+
     }
     else {
         printf("");
@@ -98,6 +101,7 @@ void DataSource::close(QString portName)
     m_serial->setPortName(portName);
     m_serial->close();
     emit sigSerialPortError();
+    m_timerBufferProcessing.stop();
 
 }
 
@@ -130,19 +134,23 @@ void DataSource::onSerialPortError(QSerialPort::SerialPortError error)
     emit sigSerialPortError();
 
 }
-void DataSource::readData()
+
+void DataSource::dataProcessing()
 {
     uint8_t oneByte = 0x00;
     static uint8_t state = 0;
     static uint8_t data_count = 0;
     static char buffer[CHANNEL_COUNT * 4 + 1] = {0,};
-    while( m_serial->bytesAvailable() )
-    {
 
+
+    uint32_t ulLoopCnt = m_serialBuffer.size();
+
+    for( uint32_t ulCnt = 0; ulCnt < ulLoopCnt; ulCnt ++ )
+    {
+        oneByte = m_serialBuffer.at(ulCnt);
         switch( state )
         {
         case STEP1:
-            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
                 state = STEP2;
@@ -153,7 +161,6 @@ void DataSource::readData()
             }
             break;
         case STEP2:
-            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
                 state = STEP3;
@@ -164,7 +171,6 @@ void DataSource::readData()
             }
             break;
         case STEP3:
-            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xaa )
             {
                 state = STEP4;
@@ -175,7 +181,6 @@ void DataSource::readData()
             }
             break;
         case STEP4:
-            m_serial->read((char*)&oneByte, 1);
             if( (uint8_t)oneByte == 0xab )
             {
                 state = PROCESSING;
@@ -187,7 +192,6 @@ void DataSource::readData()
             break;
         case PROCESSING:
 
-            m_serial->read((char*)&oneByte, 1);
             buffer[data_count++] = (char)oneByte;
 
             if( data_count == CHANNEL_COUNT * 4 + 1)
@@ -198,7 +202,7 @@ void DataSource::readData()
                 float data[CHANNEL_COUNT] = {0,};
                 memcpy(&data[0], &buffer[0], 16);
 
-                uint8_t calculate_sum = 0;
+                uint8_t calculate_sum = 0xff;
                 uint8_t sum = buffer[16];
 
                 for(uint8_t cnt= 0; cnt < CHANNEL_COUNT * 4; cnt ++ )
@@ -226,6 +230,15 @@ void DataSource::readData()
             break;
         }
     }
+    m_serialBuffer.clear();
+}
+void DataSource::readData()
+{
+    if( m_serial->bytesAvailable() )
+    {
+        m_serialBuffer.append( m_serial->readAll() );
+    }
+
 }
 void DataSource::update(QAbstractSeries *series, int lineIndex)
 {
