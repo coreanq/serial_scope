@@ -46,6 +46,9 @@ ChartView {
     property Item  chartCoodinateItem : null
     property Item highlightItem : null
 
+
+    legend.co
+
     Component.onCompleted: {
         series("Ch 1").useOpenGL = openGL;
         series("Ch 2").useOpenGL = openGL;
