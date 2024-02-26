@@ -53,6 +53,10 @@ Item {
     property string ch3MinY: "-1000"
     property string ch4MaxY: "1000"
     property string ch4MinY: "-1000"
+    property string ch5MaxY: "1000"
+    property string ch5MinY: "-1000"
+    property string ch6MaxY: "1000"
+    property string ch6MinY: "-1000"
 
     function onZoomInClicked()
     {
@@ -77,6 +81,13 @@ Item {
         yMinMaxChanged(
             ch4MaxY, ch4MinY, 3
         );
+        yMinMaxChanged(
+            ch5MaxY, ch5MinY, 4
+        );
+        yMinMaxChanged(
+            ch6MaxY, ch6MinY, 5
+        );
+
         yScaleChanged(
                     '1', 0
         )
@@ -88,6 +99,12 @@ Item {
         )
         yScaleChanged(
                     '1', 3
+        )
+        yScaleChanged(
+                    '1', 4
+        )
+        yScaleChanged(
+                    '1', 5
         )
 
         yOffsetChanged(
@@ -101,6 +118,12 @@ Item {
         );
         yOffsetChanged(
                 "0",  3
+        );
+        yOffsetChanged(
+                "0",  4
+        );
+        yOffsetChanged(
+                "0",  5
         );
     }
 
@@ -591,6 +614,105 @@ Item {
                 }
             }
 
+            ////////////////////////////////////////////////////////////////////////////////////
+            // "Ch5 Y Scale signed:
+            Text {
+                text: "Ch5"
+                color: "gray"
+            }
+            TextInput {
+                text: ch5MaxY
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
+
+                onAccepted: {
+                    ch5MaxY = text;
+                    ch5MinY = '-' + text;
+                    yMinMaxChanged(
+                            ch5MaxY, ch5MinY, 4
+                    );
+                }
+            }
+            TextInput {
+                text: ch6MinY
+                color:"gray"
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  4
+                        );
+                }
+            }
+            TextInput {
+                text: "0"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "0"
+                        yOffsetChanged(
+                                text,  4
+                        );
+                }
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////
+            // "Ch6 Y Scale signed:
+            Text {
+                text: "Ch6"
+                color: "gray"
+            }
+            TextInput {
+                text: ch6MaxY
+                color:"white"
+                validator: IntValidator{bottom: -10000000; top: 10000000;}
+
+                onAccepted: {
+                    ch6MaxY = text;
+                    ch6MinY = '-' + text;
+                    yMinMaxChanged(
+                            ch6MaxY, ch6MinY, 5
+                    );
+                }
+            }
+            TextInput {
+                text: ch6MinY
+                color:"gray"
+            }
+            TextInput {
+                text: "1"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "1"
+                        yScaleChanged(
+                                text,  5
+                        );
+                }
+            }
+            TextInput {
+                text: "0"
+                color:"white"
+
+                validator: IntValidator{bottom: -1000000; top: 1000000;}
+                onAccepted: {
+                        if( text == "" )
+                            text = "0"
+                        yOffsetChanged(
+                                text,  5
+                        );
+                }
+            }
         }
     }
 }

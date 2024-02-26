@@ -200,10 +200,10 @@ void DataSource::dataProcessing()
                 data_count = 0;
 
                 float data[CHANNEL_COUNT] = {0,};
-                memcpy(&data[0], &buffer[0], 16);
+                memcpy(&data[0], &buffer[0], CHANNEL_COUNT * 4);
 
                 uint8_t calculate_sum = 0xff;
-                uint8_t sum = buffer[16];
+                uint8_t sum = buffer[CHANNEL_COUNT * 4];
 
                 for(uint8_t cnt= 0; cnt < CHANNEL_COUNT * 4; cnt ++ )
                 {

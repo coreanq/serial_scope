@@ -51,6 +51,8 @@ ChartView {
         series("Ch 2").useOpenGL = openGL;
         series("Ch 3").useOpenGL = openGL;
         series("Ch 4").useOpenGL = openGL;
+        series("Ch 5").useOpenGL = openGL;
+        series("Ch 6").useOpenGL = openGL;
     }
 
     Component {
@@ -70,6 +72,8 @@ ChartView {
             property string da2_str
             property string da3_str
             property string da4_str
+            property string da5_str
+            property string da6_str
 
             Text{
                 id: da1_value
@@ -93,6 +97,18 @@ ChartView {
                 id: da4_value
                 text: "Ch4: " + da4_str
                 color: "yellow"
+                font.bold: true
+            }
+            Text{
+                id: da5_value
+                text: "Ch5: " + da5_str
+                color: "gray"
+                font.bold: true
+            }
+            Text{
+                id: da6_value
+                text: "Ch6: " + da6_str
+                color: "orange"
                 font.bold: true
             }
         }
@@ -138,6 +154,8 @@ ChartView {
             var da2 = chartView.mapToValue(currentMousePoint, lineSeries2)
             var da3 = chartView.mapToValue(currentMousePoint, lineSeries3)
             var da4 = chartView.mapToValue(currentMousePoint, lineSeries4)
+            var da5 = chartView.mapToValue(currentMousePoint, lineSeries5)
+            var da6 = chartView.mapToValue(currentMousePoint, lineSeries6)
 //            console.log( da1.x)
 //            console.log( lineSeries1.at( da1.x).y )
 
@@ -146,6 +164,8 @@ ChartView {
             chartCoodinateItem.da2_str =  ( Math.round(lineSeries2.at( da2.x).y * 100 ) /100).toString()
             chartCoodinateItem.da3_str =  ( Math.round(lineSeries3.at( da3.x).y * 100 ) /100).toString()
             chartCoodinateItem.da4_str =  ( Math.round(lineSeries4.at( da4.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da5_str =  ( Math.round(lineSeries5.at( da5.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da6_str =  ( Math.round(lineSeries6.at( da6.x).y * 100 ) /100).toString()
         }
         onReleased: {
         // here you can add you zooming stuff if you want
@@ -199,6 +219,12 @@ ChartView {
     ValueAxis {
         id: axisY4
     }
+    ValueAxis {
+       id: axisY5
+    }
+    ValueAxis {
+        id: axisY6
+    }
 
     ValueAxis {
         id: axisX
@@ -232,13 +258,27 @@ ChartView {
         axisYRight: axisY4
         useOpenGL: chartView.openGL
     }
+    LineSeries {
+        id: lineSeries5
+        name: "Ch 5"
+        axisX: axisX
+        axisYRight: axisY5
+        useOpenGL: chartView.openGL
+    }
+    LineSeries {
+        id: lineSeries6
+        name: "Ch 6"
+        axisX: axisX
+        axisYRight: axisY6
+        useOpenGL: chartView.openGL
+    }
 
 //![1]
 
     //![2]
     Timer {
         id: refreshTimer
-        interval: 1 / 15 * 1000 // ? Hz
+        interval: 33
         running: true
         repeat: true
         onTriggered: {
@@ -246,6 +286,8 @@ ChartView {
             dataSource.update(chartView.series(1), 1);
             dataSource.update(chartView.series(2), 2);
             dataSource.update(chartView.series(3), 3);
+            dataSource.update(chartView.series(4), 4);
+            dataSource.update(chartView.series(5), 5);
         }
     }
     //![2]
@@ -274,21 +316,12 @@ ChartView {
 
             series4 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 4",
                                                  axisX, axisY4);
-        } else {
-            series1 = chartView.createSeries(ChartView.SeriesTypeScatter, "Ch 1",
-                                                 axisX, axisY1);
-            series1.markerSize = 2;
-            series1.borderColor = "transparent";
 
-            series2 = chartView.createSeries(ChartView.SeriesTypeScatter, "Ch 2",
-                                                 axisX, axisY2);
-            series2.markerSize = 2;
-            series2.borderColor = "transparent";
+            series5 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 5",
+                                                 axisX, axisY5);
 
-            series3 = chartView.createSeries(ChartView.SeriesTypeScatter, "Ch 3",
-                                                 axisX, axisY3);
-            series3.markerSize = 2;
-            series3.borderColor = "transparent";
+            series6 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 6",
+                                                 axisX, axisY6);
         }
     }
 
@@ -319,6 +352,14 @@ ChartView {
         case 3:
             axisY4.max = parseInt(maxY)
             axisY4.min = parseInt(minY)
+           break;
+        case 4:
+            axisY5.max = parseInt(maxY)
+            axisY5.min = parseInt(minY)
+           break;
+        case 5:
+            axisY6.max = parseInt(maxY)
+            axisY6.min = parseInt(minY)
            break;
 
         }

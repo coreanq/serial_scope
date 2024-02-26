@@ -40,7 +40,7 @@
 #include <QThread>
 
 
-#define CHANNEL_COUNT		4
+#define CHANNEL_COUNT		6
 
 QT_BEGIN_NAMESPACE
 class QQuickView;
