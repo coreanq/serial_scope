@@ -38,6 +38,8 @@
 #include <QStringListModel>
 #include <QTimer>
 #include <QThread>
+#include <QFile>
+#include <QTextStream>
 
 
 #define CHANNEL_COUNT		6
@@ -75,15 +77,18 @@ public:
     Q_INVOKABLE void dataProcessing();
 
 private:
-    QTimer 		m_timerBufferProcessing;
-    QQueue<float> m_data[CHANNEL_COUNT];
-    QByteArray  m_serialBuffer;
+    QFile				m_file;
+    QTextStream			m_saveData;
 
-    QVector<QPointF> m_points[CHANNEL_COUNT];
-    int				m_yOffsets[CHANNEL_COUNT];
-    int				m_yScales[CHANNEL_COUNT];
-    QStringListModel m_modelSerialList;
-    int 		     m_screenXCount;
+    QTimer 				m_timerBufferProcessing;
+    QQueue<float> 		m_data[CHANNEL_COUNT];
+    QByteArray  		m_serialBuffer;
+
+    QVector<QPointF> 	m_points[CHANNEL_COUNT];
+    int					m_yOffsets[CHANNEL_COUNT];
+    int					m_yScales[CHANNEL_COUNT];
+    QStringListModel 	m_modelSerialList;
+    int 		     	m_screenXCount;
 };
 
 #endif // DATASOURCE_H

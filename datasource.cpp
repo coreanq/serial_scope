@@ -37,6 +37,7 @@
 #include <QtCore/QtMath>
 #include <QSerialPortInfo>
 #include <QTimer>
+#include <QDateTime>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -77,6 +78,9 @@ DataSource::DataSource(QObject *parent) :
         m_points[i].reserve(maxSamplingCount);
         m_yOffsets[i] = 0;
     }
+
+    // 100us 30 bytes data -> 300kbytes /s
+    m_serialBuffer.reserve(1000000);
     m_timerBufferProcessing.setInterval(100);
 
     connect(&m_timerBufferProcessing, &QTimer::timeout, this, &DataSource::dataProcessing );
@@ -90,8 +94,16 @@ void DataSource::open(QString portName)
         emit sigSerialPortOpenSuccess();
         m_timerBufferProcessing.start();
 
+        QString time_format = "yyyy-MM-dd_HHmmss";
+        QDateTime date = QDateTime::currentDateTime();
+        QString date_string = date.toString(time_format);
+        QString file_name(QString("s300_data_%1.csv").arg(date_string));
+        m_file.setFileName(file_name);
+        bool isOpen = m_file.open(QFile::WriteOnly|QFile::Append|QFile::Text); // 쓰기 전용, 텍스트, 이어쓰기
+
     }
     else {
+        m_file.close();
         printf("");
     }
 
@@ -144,6 +156,9 @@ void DataSource::dataProcessing()
 
 
     uint32_t ulLoopCnt = m_serialBuffer.size();
+
+
+    QTextStream saveFile(&m_file);
 
     for( uint32_t ulCnt = 0; ulCnt < ulLoopCnt; ulCnt ++ )
     {
@@ -212,17 +227,16 @@ void DataSource::dataProcessing()
 
                 if( sum != calculate_sum )
                 {
-                    qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3];
+                    qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5] << ", ";
                 }
                 else
                 {
+                    saveFile << data[0] << "," << data[1] << "," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "\n";
                     for (int i = 0; i < CHANNEL_COUNT; i ++ )
                     {
                         m_data[i].append(data[i]);
                     }
                 }
-
-//                if( data[2] > 700.f || data[2] < -700.f  )
 
             }
             break;
@@ -230,6 +244,29 @@ void DataSource::dataProcessing()
             break;
         }
     }
+
+    m_file.flush();
+
+    if( m_file.size() > 100000000 )
+    {
+        m_file.close();
+        QString time_format = "yyyy-MM-dd_HHmmss";
+        QDateTime date = QDateTime::currentDateTime();
+        QString date_string = date.toString(time_format);
+        QString file_name(QString("s300_data_%1.csv").arg(date_string));
+        m_file.setFileName(file_name);
+        bool isOpen = m_file.open(QFile::WriteOnly|QFile::Append|QFile::Text); // 쓰기 전용, 텍스트, 이어쓰기
+        if( isOpen == false )
+        {
+            qDebug() << "open fail";
+        }
+        else
+        {
+            qDebug() << "new file open";
+
+        }
+    }
+
     m_serialBuffer.clear();
 }
 void DataSource::readData()

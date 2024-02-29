@@ -39,6 +39,7 @@ ChartView {
 
     animationOptions: ChartView.NoAnimation
     theme: ChartView.ChartThemeDark
+    antialiasing: true
     property bool openGL: true
     property bool openGLSupported: true
     property rect zoomArea
@@ -46,8 +47,6 @@ ChartView {
     property Item  chartCoodinateItem : null
     property Item highlightItem : null
 
-
-    legend.co
 
     Component.onCompleted: {
         series("Ch 1").useOpenGL = openGL;
@@ -105,7 +104,7 @@ ChartView {
             Text{
                 id: da5_value
                 text: "Ch5: " + da5_str
-                color: "gray"
+                color: "magenta"
                 font.bold: true
             }
             Text{
@@ -223,7 +222,7 @@ ChartView {
         id: axisY4
     }
     ValueAxis {
-       id: axisY5
+        id: axisY5
     }
     ValueAxis {
         id: axisY6
@@ -239,6 +238,7 @@ ChartView {
         axisX: axisX
         axisY: axisY1
         useOpenGL: chartView.openGL
+        color: "blue"
     }
     LineSeries {
         id: lineSeries2
@@ -246,6 +246,7 @@ ChartView {
         axisX: axisX
         axisYRight: axisY2
         useOpenGL: chartView.openGL
+        color: "red"
     }
     LineSeries {
         id: lineSeries3
@@ -253,6 +254,7 @@ ChartView {
         axisX: axisX
         axisYRight: axisY3
         useOpenGL: chartView.openGL
+        color: "green"
     }
     LineSeries {
         id: lineSeries4
@@ -260,6 +262,7 @@ ChartView {
         axisX: axisX
         axisYRight: axisY4
         useOpenGL: chartView.openGL
+        color: "yellow"
     }
     LineSeries {
         id: lineSeries5
@@ -267,6 +270,7 @@ ChartView {
         axisX: axisX
         axisYRight: axisY5
         useOpenGL: chartView.openGL
+        color: "magenta"
     }
     LineSeries {
         id: lineSeries6
@@ -274,6 +278,7 @@ ChartView {
         axisX: axisX
         axisYRight: axisY6
         useOpenGL: chartView.openGL
+        color: "orange"
     }
 
 //![1]
@@ -281,7 +286,7 @@ ChartView {
     //![2]
     Timer {
         id: refreshTimer
-        interval: 33
+        interval: 100
         running: true
         repeat: true
         onTriggered: {
