@@ -69,7 +69,9 @@ ChartView {
     Component {
         id: chartCoodinateComponent
 
-        ColumnLayout  {
+
+        Rectangle
+        {
             property string da1_str
             property string da2_str
             property string da3_str
@@ -77,43 +79,50 @@ ChartView {
             property string da5_str
             property string da6_str
 
-            Text{
-                id: da1_value
-                text: "Ch1: " + da1_str
-                color: "blue"
-                font.bold: true
+            opacity: 0.8
+            color: "white"
+            ColumnLayout  {
+
+                Text{
+                    id: da1_value
+                    text: "Ch1: " + da1_str
+                    color: "blue"
+                    font.bold: true
+                }
+                Text{
+                    id: da2_value
+                    text: "Ch2: " + da2_str
+                    color: "red"
+                    font.bold: true
+                }
+                Text{
+                    id: da3_value
+                    text: "Ch3: " + da3_str
+                    color: "green"
+                    font.bold: true
+                }
+                Text{
+                    id: da4_value
+                    text: "Ch4: " + da4_str
+                    color: "yellow"
+                    font.bold: true
+                }
+                Text{
+                    id: da5_value
+                    text: "Ch5: " + da5_str
+                    color: "magenta"
+                    font.bold: true
+                }
+                Text{
+                    id: da6_value
+                    text: "Ch6: " + da6_str
+                    color: "orange"
+                    font.bold: true
+                }
             }
-            Text{
-                id: da2_value
-                text: "Ch2: " + da2_str
-                color: "red"
-                font.bold: true
-            }
-            Text{
-                id: da3_value
-                text: "Ch3: " + da3_str
-                color: "green"
-                font.bold: true
-            }
-            Text{
-                id: da4_value
-                text: "Ch4: " + da4_str
-                color: "yellow"
-                font.bold: true
-            }
-            Text{
-                id: da5_value
-                text: "Ch5: " + da5_str
-                color: "magenta"
-                font.bold: true
-            }
-            Text{
-                id: da6_value
-                text: "Ch6: " + da6_str
-                color: "orange"
-                font.bold: true
-            }
+
         }
+
     }
     MouseArea {
         anchors.fill: parent
@@ -335,7 +344,7 @@ ChartView {
 
     function changePlayType(type) {
 
-        if (type === "stop") {
+        if (type === "hidden") {
             refreshTimer.running = false
         } else {
             refreshTimer.running = true

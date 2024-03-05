@@ -58,6 +58,7 @@ enum {
 
 QSerialPort* m_serial  = new QSerialPort();
 
+QString time_format = "yyyy-MM-dd_HHmmss";
 
 DataSource::DataSource(QObject *parent) :
     QObject(parent)
@@ -94,7 +95,6 @@ void DataSource::open(QString portName)
         emit sigSerialPortOpenSuccess();
         m_timerBufferProcessing.start();
 
-        QString time_format = "yyyy-MM-dd_HHmmss";
         QDateTime date = QDateTime::currentDateTime();
         QString date_string = date.toString(time_format);
         QString file_name(QString("s300_data_%1.csv").arg(date_string));
@@ -114,6 +114,7 @@ void DataSource::close(QString portName)
     m_serial->close();
     emit sigSerialPortError();
     m_timerBufferProcessing.stop();
+    m_file.close();
 
 }
 
@@ -231,7 +232,9 @@ void DataSource::dataProcessing()
                 }
                 else
                 {
-                    saveFile << data[0] << "," << data[1] << "," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "\n";
+                    QDateTime date = QDateTime::currentDateTime();
+                    QString date_string = date.toString("HHmmss.zzz");
+                    saveFile << date_string << "," << data[0] << "," << data[1] << "," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "\n";
                     for (int i = 0; i < CHANNEL_COUNT; i ++ )
                     {
                         m_data[i].append(data[i]);
@@ -250,7 +253,6 @@ void DataSource::dataProcessing()
     if( m_file.size() > 100000000 )
     {
         m_file.close();
-        QString time_format = "yyyy-MM-dd_HHmmss";
         QDateTime date = QDateTime::currentDateTime();
         QString date_string = date.toString(time_format);
         QString file_name(QString("s300_data_%1.csv").arg(date_string));

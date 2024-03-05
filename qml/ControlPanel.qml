@@ -60,12 +60,12 @@ Item {
 
     function onZoomInClicked()
     {
-        gridOption.enabled = false
+//        gridOption.enabled = false
     }
 
     function onZoomResetClicked()
     {
-        gridOption.enabled = true
+//        gridOption.enabled = true
     }
 
     Component.onCompleted: {
@@ -128,14 +128,15 @@ Item {
     }
 
     LinearGradient {
-           anchors.fill: parent
-           start: Qt.point(0, 0)
-           end: Qt.point(0, 300)
-           gradient: Gradient {
-               GradientStop { position: 0.0; color: "green" }
-               GradientStop { position: 1.0; color: "black" }
-           }
-       }
+       anchors.fill: parent
+       start: Qt.point(0, 0)
+       end: Qt.point(0, 600)
+       gradient:
+            Gradient{
+                   GradientStop { position: 0.0; color: { if( isOpen == false ) { return "red" } else { return "green"} } }
+                   GradientStop { position: 1.0; color: "black" }
+               }
+   }
 
     onIsOpenChanged: {
         if( isOpen == true ) {
@@ -193,8 +194,6 @@ Item {
                         dataSource.open(serialPortName.currentText);
                     }
                 }
-
-
                 style: ButtonStyle {
                     label: Component {
                         Text {
@@ -217,7 +216,6 @@ Item {
                         dataSource.close(serialPortName.currentText);
                     }
                 }
-
                 style: ButtonStyle {
                     label: Component {
                         Text {
@@ -257,6 +255,24 @@ Item {
                         }
                     }
                 }
+                Rectangle{
+                    anchors.fill: parent
+
+                    color: {
+                        if( isOpen == false)
+                            return "white"
+                        else
+                            return "light black"
+
+                    }
+
+                    opacity: {
+                        if( isOpen == false)
+                            return 0
+                        else
+                            return 0.5
+                    }
+                }
             }
 
             Button {
@@ -269,14 +285,22 @@ Item {
                 enabled: !isOpen
                 Rectangle{
                     anchors.fill: parent
+
+                    color: {
+                        if( isOpen == false)
+                            return "white"
+                        else
+                            return "light black"
+
+                    }
+
                     opacity: {
                         if( isOpen == false)
                             return 0
                         else
-                            return 1
+                            return 0.5
                     }
                 }
-
                 style: ButtonStyle {
                     label: Component {
                         Text {
@@ -311,8 +335,8 @@ Item {
                     }
                 }
 
-                text: "Play: "
-                items: ["stop", "run"]
+                text: "Trend: "
+                items: ["hidden", "show"]
                 currentSelection: 0
                 onSelectionChanged: {
                     playTypeChanged(items[currentSelection])
@@ -335,7 +359,6 @@ Item {
                 id: smapleCountText
                 text: "Samples: "
                 color: "white"
-
             }
 
             ComboBox {

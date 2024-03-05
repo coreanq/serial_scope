@@ -32,8 +32,10 @@
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlEngine>
 #include <QtCore/QDir>
-#include <QThread>
 #include "datasource.h"
+
+
+#define  VERSION_STRING 		"0.9.0"
 
 int main(int argc, char *argv[])
 {
@@ -53,17 +55,9 @@ int main(int argc, char *argv[])
                                       QString::fromLatin1("qml")));
     QObject::connect(viewer.engine(), &QQmlEngine::quit, &viewer, &QWindow::close);
 
-    viewer.setTitle(QStringLiteral("Serial Oscilloscope"));
+    viewer.setTitle(QString("Serial Oscilloscope Ver %1").arg(VERSION_STRING) );
 
     DataSource dataSource;
-//    QThread		*m_threadProcess = new QThread();
-//    dataSource.moveToThread(m_threadProcess);
-//    m_threadProcess->start();
-
-
-
-
-
     viewer.rootContext()->setContextProperty("dataSource", &dataSource);
 
     viewer.engine()->addImportPath("qrc:/");
