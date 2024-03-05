@@ -150,10 +150,14 @@ Item {
     }
 
     ColumnLayout {
-        anchors.fill: parent
-        spacing: 8
-        Layout.fillHeight: true
 
+        id: mainPanel
+//        anchors.fill: parent
+        anchors.left : parent.left
+        anchors.right: parent.right
+
+        spacing: 20
+        Layout.fillHeight: true
 
         Text {
             text: "Scope"
@@ -161,25 +165,12 @@ Item {
             color: "white"
         }
 
-
         onWidthChanged: {
-
             if (optionHideItem !== null) {
                 // if there is already a selection, delete it
                 optionHideItem.destroy ();
             }
             var point = {}
-            // create a new rectangle at the wanted position
-//            optionHideItem = optionHideComponent.createObject (parent, {
-//                "x" : 0,
-//                "y" : 0,
-//                "width" : gridOption.width,
-//                "height" : gridOption.height
-//            });
-//            point = mapFromGlobal(optionHideItem.x, optionHideItem.y)
-//            optionHideItem.x = point.x
-//            optionHideItem.y = point.y
-
         }
 
 
@@ -316,24 +307,49 @@ Item {
             }
         }
 
-        GridLayout {
-            id: gridOption
-            columns: 5
+    }
+
+    GridLayout {
+        id: gridOption
+
+        anchors.bottom: main.bottom
+        anchors.bottomMargin: 50
+
+        anchors.left: mainPanel.right
+        anchors.right: mainPanel.right
+        visible: false
+
+
+        states: [
+            State {
+                name: "opening"; when: isOpen
+                AnchorChanges { target: gridOption; anchors.left: mainPanel.left }
+                PropertyChanges { target: gridOption; visible: true }
+             },
+            State {
+                name: "closing"; when: !isOpen
+                AnchorChanges { target: gridOption; anchors.left: mainPanel.right }
+                PropertyChanges { target: gridOption; visible: false }
+             }
+        ]
+
+        transitions: Transition {
+                 // smoothly reanchor myRect and move into new position
+                 AnchorAnimation { duration: 500 }
+                 PropertyAnimation {duration: 500 }
+        }
+
+
+
+        height: 400
+
+        columns: 5
             columnSpacing:5
             rowSpacing:5
 
             MultiButton {
                 id: playButton
                 enabled: isOpen
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
-                }
 
                 text: "Trend: "
                 items: ["hidden", "show"]
@@ -364,17 +380,7 @@ Item {
             ComboBox {
                 id: sampleCount
                 enabled: isOpen
-                Rectangle{
-                    anchors.fill: parent
-                    opacity: {
-                        if( isOpen == true)
-                            return 0
-                        else
-                            return 1
-                    }
-                }
 
-        //        text: "Samples: "
                 model: ["128", "256", "512", "1024", "2048", "10000", "50000", "100000", "200000", "500000" ]
 
                 onCurrentIndexChanged: signalSourceChanged(
@@ -736,6 +742,7 @@ Item {
                         );
                 }
             }
+
+
         }
-    }
 }

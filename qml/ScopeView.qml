@@ -79,14 +79,16 @@ ChartView {
             property string da5_str
             property string da6_str
 
-            opacity: 0.8
-            color: "white"
+            color: "dark gray"
+            width: da1_value.width * 1.5
+            height: da1_value.height * 9
+
             ColumnLayout  {
 
                 Text{
                     id: da1_value
                     text: "Ch1: " + da1_str
-                    color: "blue"
+                    color: "dodgerblue"
                     font.bold: true
                 }
                 Text{
@@ -124,7 +126,7 @@ ChartView {
         }
 
     }
-    MouseArea {
+    MouseArea{
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         hoverEnabled: true
@@ -247,7 +249,7 @@ ChartView {
         axisX: axisX
         axisY: axisY1
         useOpenGL: chartView.openGL
-        color: "blue"
+        color: "dodgerblue"
     }
     LineSeries {
         id: lineSeries2
