@@ -38,6 +38,7 @@
 #include <QSerialPortInfo>
 #include <QTimer>
 #include <QDateTime>
+#include <UtilCrc16.h>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -153,7 +154,7 @@ void DataSource::dataProcessing()
     uint8_t oneByte = 0x00;
     static uint8_t state = 0;
     static uint8_t data_count = 0;
-    static char buffer[CHANNEL_COUNT * 4 + 1] = {0,};
+    static char buffer[CHANNEL_COUNT * 4 + 2] = {0,};
 
 
     uint32_t ulLoopCnt = m_serialBuffer.size();
@@ -210,7 +211,7 @@ void DataSource::dataProcessing()
 
             buffer[data_count++] = (char)oneByte;
 
-            if( data_count == CHANNEL_COUNT * 4 + 1)
+            if( data_count == CHANNEL_COUNT * 4 + 2)
             {
                 state = STEP1;
                 data_count = 0;
@@ -218,15 +219,14 @@ void DataSource::dataProcessing()
                 float data[CHANNEL_COUNT] = {0,};
                 memcpy(&data[0], &buffer[0], CHANNEL_COUNT * 4);
 
-                uint8_t calculate_sum = 0xff;
-                uint8_t sum = buffer[CHANNEL_COUNT * 4];
+                uint16_t calculate_crc16 = 0x00;
+                uint16_t crc16 = 0;
 
-                for(uint8_t cnt= 0; cnt < CHANNEL_COUNT * 4; cnt ++ )
-                {
-                    calculate_sum += buffer[cnt];
-                }
+                calculate_crc16 = UtilCrc16::Calculation((uint8_t*)buffer, CHANNEL_COUNT * 4);
 
-                if( sum != calculate_sum )
+                memcpy (&crc16, &buffer[CHANNEL_COUNT* 4], sizeof(uint16_t));
+
+                if( crc16 != calculate_crc16 )
                 {
                     qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5];
                 }
