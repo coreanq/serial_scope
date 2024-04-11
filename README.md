@@ -1,9 +1,9 @@
 # serial_scope 
- - serial port data to scope
+ - uart data to scope (like oscilloscope)
 
 ## Development Environment
  - Qt 5.15.2
- - baudrate 3Mbps ( Must H/W Support this baudrate)
+ - baudrate 3Mbps ( H/W should support this baudrate)
    ( I use FT2232h with this project )
 
 
@@ -21,8 +21,8 @@
 
 ## HowTo 
  - load .pro file to Qt Creator 
- - just send {0xaa, 0xaa, 0xaa, 0xab, 24bytes, crc16 }
+ - send data using uart {0xaa, 0xaa, 0xaa, 0xab, 24bytes, crc16 }
  - [Trend hidden] button click to show trend
 
-## Screen shot
+## Screenshot
  ![alt text](image.png)
