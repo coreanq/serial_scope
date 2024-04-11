@@ -3,12 +3,13 @@
 
 ## Development Environment
  - Qt 5.15.2
+ - baudrate 3Mbps ( Must H/W Support this baudrate)
 
 ## Features
- - max 6 channel supported 
+ - max 6 channel is supported 
  - All log data save to csv file which is 100MB size, consecutively.
  - limit, scale, offset setting avaliable
- - zoom in, zoom out function(just draw rectangle you want to zoom in/out with mouse )
+ - zoom in/out (just draw rectangle you want to zoom in/out with mouse left click, To set default zoom setting, click mouse right button )
  - show legend
 
 ## Data Structure(total 30bytes)

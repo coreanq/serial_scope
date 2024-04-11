@@ -1,9 +1,12 @@
 QT += charts quick serialport
 
 HEADERS += \
+    UtilBit.h \
+    UtilCrc16.h \
     datasource.h
 
 SOURCES += \
+    UtilCrc16.cpp \
     main.cpp \
     datasource.cpp
 
