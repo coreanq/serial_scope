@@ -40,14 +40,14 @@
 #include <QDateTime>
 #include <UtilCrc16.h>
 
-QT_CHARTS_USE_NAMESPACE
+// QT_CHARTS_USE_NAMESPACE
 
 Q_DECLARE_METATYPE(QAbstractSeries *)
 Q_DECLARE_METATYPE(QAbstractAxis *)
 
 
 
-const int32_t maxSamplingCount = 1000000;
+static const int maxSamplingCount = 1000000;
 enum {
     STEP1,
     STEP2,
@@ -228,7 +228,7 @@ void DataSource::dataProcessing()
 
                 if( crc16 != calculate_crc16 )
                 {
-                    qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5];
+                    // qDebug() << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << ", " << data[4] << ", " << data[5];
                 }
                 else
                 {
@@ -299,28 +299,28 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
         }
 
 
+        QPointF pt;
         if( m_data[lineIndex].size() >= m_screenXCount ) {
             for( int i = 0 ; i < m_screenXCount; i ++ ) {
-                QPointF pt;
                 pt.setX(i);
-                pt.setY( ( m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] )  * m_yScales[lineIndex] );
+                float y_point = ( m_data[lineIndex][  dataTotalCount - m_screenXCount +  i] + m_yOffsets[lineIndex] )  * m_yScales[lineIndex];
+                pt.setY( y_point);
                 m_points[lineIndex].replace(i, pt);
             }
         }
         else {
             for( int i = 0 ; i < m_screenXCount ; i ++ ) {
-                QPointF pt;
                 pt.setX(i);
                 if( i >= m_screenXCount - dataTotalCount)
                 {
-                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] )  * m_yScales[lineIndex] ) ;
+                    float y_point =  ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )]  + m_yOffsets[lineIndex] )  * m_yScales[lineIndex];
+                    pt.setY(y_point) ;
                 }
                 else
                 {
                     pt.setY(0);
                 }
                 m_points[lineIndex].replace(i, pt);
-//                m_points[lineIndex].append(pt);
             }
         }
         xySeries->replace(m_points[lineIndex]);

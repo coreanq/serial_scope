@@ -27,9 +27,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
+import QtQuick
+import QtQuick.Controls
 
 Item {
     id: button
@@ -49,18 +48,16 @@ Item {
         width: parent.width
         height: parent.height
 
-        style: ButtonStyle {
-            label: Component {
-                Text {
-                    text: button.text + button.items[currentSelection]
-                    clip: true
-                    wrapMode: Text.WordWrap
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    anchors.fill: parent
-                }
-            }
+
+        contentItem :  Text {
+            text: button.text + button.items[currentSelection]
+            clip: true
+            wrapMode: Text.WordWrap
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            anchors.fill: parent
         }
+
         onClicked: {
             currentSelection = (currentSelection + 1) % items.length;
             selectionChanged(button.items[currentSelection]);

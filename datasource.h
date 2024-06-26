@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 class QQuickView;
 QT_END_NAMESPACE
 
-QT_CHARTS_USE_NAMESPACE
+// QT_CHARTS_USE_NAMESPACE
 
 
 class DataSource : public QObject

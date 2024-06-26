@@ -35,7 +35,7 @@
 #include "datasource.h"
 
 
-#define  VERSION_STRING 		"0.9.0"
+#define  VERSION_STRING 		"0.9.2"
 
 int main(int argc, char *argv[])
 {

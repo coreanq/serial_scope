@@ -27,11 +27,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
-import QtGraphicalEffects 1.12
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtQuick.Window
 
 Item {
     id: main
@@ -127,16 +126,22 @@ Item {
         );
     }
 
-    LinearGradient {
+    ShaderEffect {
        anchors.fill: parent
-       start: Qt.point(0, 0)
-       end: Qt.point(0, 600)
-       gradient:
-            Gradient{
-                   GradientStop { position: 0.0; color: { if( isOpen == false ) { return "red" } else { return "green"} } }
-                   GradientStop { position: 1.0; color: "black" }
-               }
-   }
+       fragmentShader: "
+            varying vec2 qt_TexCoord0;
+            void main() {
+                vec2 uv = qt_TexCoord0;
+                vec4 color1 = vec4(1.0, 0.0, 0.0, 1.0); // 빨강
+                vec4 color2 = vec4(0.0, 0.0, 1.0, 1.0); // 파랑
+                gl_FragColor = mix(color1, color2, uv.y);
+            }
+        "
+    }
+            // Gradient{
+            //        GradientStop { position: 0.0; color: { if( isOpen == false ) { return "red" } else { return "green"} } }
+            //        GradientStop { position: 1.0; color: "black" }
+            //    }
 
     onIsOpenChanged: {
         if( isOpen == true ) {
@@ -185,18 +190,14 @@ Item {
                         dataSource.open(serialPortName.currentText);
                     }
                 }
-                style: ButtonStyle {
-                    label: Component {
-                        Text {
-                            text: serialPortOpen.text
-                            clip: true
-                            wrapMode: Text.WordWrap
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            anchors.fill: parent
-                        }
-                    }
-                }
+                // contentItem: Text {
+                //     text: serialPortOpen.text
+                //     clip: true
+                //     wrapMode: Text.WordWrap
+                //     verticalAlignment: Text.AlignVCenter
+                //     horizontalAlignment: Text.AlignHCenter
+                //     anchors.fill: parent
+                // }
             }
             Button {
                 id: serialPortClose
@@ -207,18 +208,15 @@ Item {
                         dataSource.close(serialPortName.currentText);
                     }
                 }
-                style: ButtonStyle {
-                    label: Component {
-                        Text {
-                            text: serialPortClose.text
-                            clip: true
-                            wrapMode: Text.WordWrap
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            anchors.fill: parent
-                        }
-                    }
-                }
+
+                // contentItem: Text {
+                //     text: serialPortClose.text
+                //     clip: true
+                //     wrapMode: Text.WordWrap
+                //     verticalAlignment: Text.AlignVCenter
+                //     horizontalAlignment: Text.AlignHCenter
+                //     anchors.fill: parent
+                // }
             }
 
         }
@@ -234,18 +232,15 @@ Item {
 
                 enabled: !isOpen
 
-                style: ComboBoxStyle {
-                    label: Component {
-                        Text {
-                            text: serialPortName.currentText
-                            clip: true
-                            wrapMode: Text.WordWrap
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            anchors.fill: parent
-                        }
-                    }
-                }
+                // contentItem:  Text {
+                //     text: serialPortName.currentText
+                //     clip: true
+                //     wrapMode: Text.WordWrap
+                //     verticalAlignment: Text.AlignVCenter
+                //     horizontalAlignment: Text.AlignHCenter
+                //     anchors.fill: parent
+                // }
+
                 Rectangle{
                     anchors.fill: parent
 
@@ -292,18 +287,15 @@ Item {
                             return 0.5
                     }
                 }
-                style: ButtonStyle {
-                    label: Component {
-                        Text {
-                            text: serialPortRefresh.text
-                            clip: true
-                            wrapMode: Text.WordWrap
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                            anchors.fill: parent
-                        }
-                    }
-                }
+
+                // contentItem:  Text {
+                //     text: serialPortRefresh.text
+                //     clip: true
+                //     wrapMode: Text.WordWrap
+                //     verticalAlignment: Text.AlignVCenter
+                //     horizontalAlignment: Text.AlignHCenter
+                //     anchors.fill: parent
+                // }
             }
         }
 
@@ -452,7 +444,7 @@ Item {
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch1MaxY = text;
                     ch1MinY = '-' + text;
                     yMinMaxChanged(
@@ -504,7 +496,7 @@ Item {
 
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch2MaxY = text;
                     ch2MinY = '-' + text;
                     yMinMaxChanged(
@@ -554,7 +546,7 @@ Item {
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch3MaxY = text;
                     ch3MinY = '-' + text;
                     yMinMaxChanged(
@@ -604,7 +596,7 @@ Item {
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch4MaxY = text;
                     ch4MinY = '-' + text;
                     yMinMaxChanged(
@@ -654,7 +646,7 @@ Item {
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch5MaxY = text;
                     ch5MinY = '-' + text;
                     yMinMaxChanged(
@@ -704,7 +696,7 @@ Item {
                 color:"white"
                 validator: IntValidator{bottom: -10000000; top: 10000000;}
 
-                onAccepted: {
+                onEditingFinished: {
                     ch6MaxY = text;
                     ch6MinY = '-' + text;
                     yMinMaxChanged(

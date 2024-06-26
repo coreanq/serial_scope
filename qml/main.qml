@@ -1,5 +1,5 @@
 
-import QtQuick 2.0
+import QtQuick
 
 //![1]
 Item {
@@ -22,6 +22,30 @@ Item {
     }
 
 
+    Connections {
+        target: controlPanel
+
+        // 아래와 같이 인자 있는 시그널을 바로 사용하면 안되고 자바스크립트 처리 함
+        // onSignalSourceChanged: {
+        //     controlPanel.onSignalSourceChanged(sampleCount)
+        // }
+
+        function onSignalSourceChanged(sampleCount){
+            scopeView.axisX().max = sampleCount;
+        }
+        function onSeriesTypeChanged(type) {
+           scopeView.changeSeriesType(type);
+        }
+        function  onPlayTypeChanged(type) {
+           scopeView.changePlayType(type);
+        }
+        function onYMinMaxChanged(maxY, minY, seriesIndex) {
+            scopeView.changeYMinMax(maxY, minY, seriesIndex);
+        }
+
+    }
+
+
     ControlPanel {
         id: controlPanel
         anchors.top: parent.top
@@ -30,15 +54,8 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 10
         width: 500
-//![1]
-
-        onSignalSourceChanged: {
-            scopeView.axisX().max = sampleCount;
-        }
-        onSeriesTypeChanged: scopeView.changeSeriesType(type);
-        onPlayTypeChanged: scopeView.changePlayType(type);
-        onYMinMaxChanged: scopeView.changeYMinMax(maxY, minY, seriesIndex);
     }
+
     onSigSerialPortError: {
         console.log("fail");
         controlPanel.isOpen = false
@@ -48,7 +65,6 @@ Item {
         controlPanel.isOpen = true
     }
 
-//![2]
     ScopeView {
         id: scopeView
         anchors.top: parent.top
@@ -56,10 +72,6 @@ Item {
         anchors.right: parent.right
         anchors.left: controlPanel.right
         height: main.height
-        antialiasing: enabled
-        openGL: enabled
 
     }
-//![2]
-
 }

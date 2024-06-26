@@ -27,9 +27,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
-import QtCharts 2.1
-import QtQuick.Layouts 1.0
+import QtQuick
+import QtCharts
+import QtQuick.Controls
+import QtQuick.Layouts
 
 //![1]
 ChartView {
@@ -40,8 +41,7 @@ ChartView {
     animationOptions: ChartView.NoAnimation
     theme: ChartView.ChartThemeDark
     antialiasing: true
-    property bool openGL: true
-    property bool openGLSupported: true
+
     property rect zoomArea
     property point currentMousePoint
     property Item  chartCoodinateItem : null
@@ -49,17 +49,77 @@ ChartView {
 
 
     Component.onCompleted: {
-        series("Ch 1").useOpenGL = openGL;
-        series("Ch 2").useOpenGL = openGL;
-        series("Ch 3").useOpenGL = openGL;
-        series("Ch 4").useOpenGL = openGL;
-        series("Ch 5").useOpenGL = openGL;
-        series("Ch 6").useOpenGL = openGL;
+        series("Ch 1").useOpenGL = true;
+        series("Ch 2").useOpenGL = true;
+        series("Ch 3").useOpenGL = true;
+        series("Ch 4").useOpenGL = true;
+        series("Ch 5").useOpenGL = true;
+        series("Ch 6").useOpenGL = true;
+
+        // chartView.addAxis(axisX, Qt.AlignBottom)
+        // chartView.addAxis(axisY1, Qt.AlignLeft)
+        // chartView.addAxis(axisY2, Qt.AlignRight)
+
+        // lineSeries1 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 1",
+        //                                      axisX, axisY1);
+
+        // lineSeries2 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 2",
+        //                                      axisX, axisY2);
+
+        // lineSeries3 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 3",
+        //                                      axisX, axisY3);
+
+        // lineSeries4 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 4",
+        //                                      axisX, axisY4);
+
+        // lineSeries5 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 5",
+        //                                      axisX, axisY5);
+
+        // lineSeries6 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 6",
+        //                                      axisX, axisY6);
+
+
+        // lineSeries1.useOpenGl = true
+        // lineSeried1.color = "red"
+
+        // lineSeries2.useOpenGl = true
+        // lineSeried2.color = "red"
+
+        // lineSeries3.useOpenGl = true
+        // lineSeried3.color = "red"
+
+        // lineSeries4.useOpenGl = true
+        // lineSeried4.color = "red"
+
+        // lineSeries5.useOpenGl = true
+        // lineSeried5.color = "red"
+
+        // lineSeries6.useOpenGl = true
+        // lineSeried6.color = "red"
+
+
+        // lineSeries1.attachAxis(axisX);
+        // lineSeries1.attachAxis(axisY1);
+
+        // lineSeries2.attachAxis(axisX);
+        // lineSeries2.attachAxis(axisY2);
+
+        // lineSeries3.attachAxis(axisX);
+        // lineSeries3.attachAxis(axisY3);
+
+        // lineSeries4.attachAxis(axisX);
+        // lineSeries4.attachAxis(axisY4);
+
+        // lineSeries5.attachAxis(axisX);
+        // lineSeries5.attachAxis(axisY5);
+
+        // lineSeries6.attachAxis(axisX);
+        // lineSeries6.attachAxis(axisY6);
+
     }
 
     Component {
         id: highlightComponent
-
         Rectangle {
             color: "yellow"
             opacity: 0.35
@@ -68,8 +128,6 @@ ChartView {
 
     Component {
         id: chartCoodinateComponent
-
-
         Rectangle
         {
             property string da1_str
@@ -126,42 +184,42 @@ ChartView {
         }
 
     }
-    MouseArea{
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        hoverEnabled: true
-        onPressed: {
-            if (mouse.button == Qt.LeftButton)
+
+    Connections{
+       target: mouseArea
+
+       function onPressed(mouse) {
+            if (mouse.button === Qt.LeftButton)
             {
                 if (highlightItem !== null) {
                     // if there is already a selection, delete it
                     highlightItem.destroy ();
                 }
                 // create a new rectangle at the wanted position
-                highlightItem = highlightComponent.createObject (parent, {
-                    "x" : mouseX,
-                    "y" : mouseY
+                highlightItem = highlightComponent.createObject (mouseArea, {
+                    "x" : mouse.x,
+                    "y" : mouse.y
                 });
-                zoomArea.x = mouseX
-                zoomArea.y = mouseY
+                zoomArea.x = mouse.x
+                zoomArea.y = mouse.y
             }
         }
 
-        onPositionChanged: {
+        function onPositionChanged(mouse) {
             // on move, update the width of rectangle
             if (highlightItem !== null) {
-                highlightItem.width = (Math.abs (mouseX - highlightItem.x));
-                highlightItem.height = (Math.abs (mouseY - highlightItem.y));
+                highlightItem.width = (Math.abs (mouse.x - highlightItem.x));
+                highlightItem.height = (Math.abs (mouse.y - highlightItem.y));
             }
 
             if( chartCoodinateItem !== null ){
                 chartCoodinateItem.destroy();
             }
 
-            chartCoodinateItem = chartCoodinateComponent.createObject(parent, { "x": mouseX + 15, "y" : mouseY + 15 } );
+            chartCoodinateItem = chartCoodinateComponent.createObject(mouseArea, { "x": mouse.x + 15, "y" : mouse.y + 15 } );
 
-            currentMousePoint.x = mouseX
-            currentMousePoint.y = mouseY
+            currentMousePoint.x = mouse.x
+            currentMousePoint.y = mouse.y
 
             var da1 = chartView.mapToValue(currentMousePoint, lineSeries1)
             var da2 = chartView.mapToValue(currentMousePoint, lineSeries2)
@@ -173,19 +231,20 @@ ChartView {
 //            console.log( lineSeries1.at( da1.x).y )
 
             // 소숫점 2자리로 끊어냄
-            chartCoodinateItem.da1_str =  ( Math.round(lineSeries1.at( da1.x).y * 100 ) /100).toString()
-            chartCoodinateItem.da2_str =  ( Math.round(lineSeries2.at( da2.x).y * 100 ) /100).toString()
-            chartCoodinateItem.da3_str =  ( Math.round(lineSeries3.at( da3.x).y * 100 ) /100).toString()
-            chartCoodinateItem.da4_str =  ( Math.round(lineSeries4.at( da4.x).y * 100 ) /100).toString()
-            chartCoodinateItem.da5_str =  ( Math.round(lineSeries5.at( da5.x).y * 100 ) /100).toString()
-            chartCoodinateItem.da6_str =  ( Math.round(lineSeries6.at( da6.x).y * 100 ) /100).toString()
+            chartCoodinateItem.da1_str =  ( Math.round(lineSeries1.at( da1.x ).y * 100 ) /100).toString()
+            chartCoodinateItem.da2_str =  ( Math.round(lineSeries2.at( da2.x ).y * 100 ) /100).toString()
+            chartCoodinateItem.da3_str =  ( Math.round(lineSeries3.at( da3.x ).y * 100 ) /100).toString()
+            chartCoodinateItem.da4_str =  ( Math.round(lineSeries4.at( da4.x ).y * 100 ) /100).toString()
+            chartCoodinateItem.da5_str =  ( Math.round(lineSeries5.at( da5.x ).y * 100 ) /100).toString()
+            chartCoodinateItem.da6_str =  ( Math.round(lineSeries6.at( da6.x ).y * 100 ) /100).toString()
         }
-        onReleased: {
-        // here you can add you zooming stuff if you want
-            if (mouse.button == Qt.LeftButton)
+
+        function onReleased(mouse) {
+            // here you can add you zooming stuff if you want
+            if (mouse.button === Qt.LeftButton)
             {
-                zoomArea.width = Math.abs(zoomArea.x - mouseX)
-                zoomArea.height = Math.abs(zoomArea.y - mouseY)
+                zoomArea.width = Math.abs(zoomArea.x - mouse.x)
+                zoomArea.height = Math.abs(zoomArea.y - mouse.y)
                 console.log(zoomArea)
                 chartView.zoomIn(zoomArea)
                 zoomInClicked()
@@ -196,18 +255,24 @@ ChartView {
             }
         }
 
-        onClicked: {
-            if (mouse.button == Qt.RightButton)
+        function onClicked(mouse){
+            if (mouse.button === Qt.RightButton)
             {
                 chartView.zoomReset()
                 zoomResetClicked()
             }
 
-            if (mouse.button == Qt.LeftButton)
+            if (mouse.button === Qt.LeftButton)
             {
             }
         }
+    }
 
+    MouseArea{
+        id: mouseArea
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        hoverEnabled: true
         onExited: {
             if( chartCoodinateItem !== null ){
                 chartCoodinateItem.destroy();
@@ -248,57 +313,59 @@ ChartView {
         name: "Ch 1"
         axisX: axisX
         axisY: axisY1
-        useOpenGL: chartView.openGL
         color: "dodgerblue"
+        useOpenGL: true
     }
     LineSeries {
         id: lineSeries2
         name: "Ch 2"
         axisX: axisX
-        axisYRight: axisY2
-        useOpenGL: chartView.openGL
+        axisY: axisY2
         color: "red"
+        useOpenGL: true
     }
     LineSeries {
         id: lineSeries3
         name: "Ch 3"
         axisX: axisX
-        axisYRight: axisY3
-        useOpenGL: chartView.openGL
+        axisY: axisY3
         color: "green"
+        // useOpenGL: true
     }
     LineSeries {
         id: lineSeries4
         name: "Ch 4"
         axisX: axisX
-        axisYRight: axisY4
-        useOpenGL: chartView.openGL
+        axisY: axisY4
         color: "yellow"
+        useOpenGL: true
     }
     LineSeries {
         id: lineSeries5
         name: "Ch 5"
         axisX: axisX
-        axisYRight: axisY5
-        useOpenGL: chartView.openGL
+        axisY: axisY5
         color: "magenta"
+        useOpenGL: true
     }
     LineSeries {
         id: lineSeries6
         name: "Ch 6"
         axisX: axisX
-        axisYRight: axisY6
-        useOpenGL: chartView.openGL
+        axisY: axisY6
         color: "orange"
+        useOpenGL: true
     }
+
+
 
 //![1]
 
     //![2]
     Timer {
         id: refreshTimer
-        interval: 100
-        running: true
+        interval: 30
+        running: false
         repeat: true
         onTriggered: {
             dataSource.update(chartView.series(0), 0);
@@ -322,26 +389,9 @@ ChartView {
         var series2;
         var series3;
         var series4;
+        var series5;
+        var series6;
 
-        if (type === "line") {
-            series1 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 1",
-                                                 axisX, axisY1);
-
-            series2 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 2",
-                                                 axisX, axisY2);
-
-            series3 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 3",
-                                                 axisX, axisY3);
-
-            series4 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 4",
-                                                 axisX, axisY4);
-
-            series5 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 5",
-                                                 axisX, axisY5);
-
-            series6 = chartView.createSeries(ChartView.SeriesTypeLine, "Ch 6",
-                                                 axisX, axisY6);
-        }
     }
 
     function changePlayType(type) {
