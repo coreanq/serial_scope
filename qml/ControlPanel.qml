@@ -663,7 +663,7 @@ Item {
                 }
             }
             TextInput {
-                text: ch6MinY
+                text: ch5MinY
                 color:"gray"
             }
             TextInput {

@@ -221,22 +221,48 @@ ChartView {
     }
     ValueAxis {
         id: axisY1
+        color: "dodgerblue"
+        titleText: "Ch1"
+        labelsAngle: 90
+        labelsColor: "dodgerblue"
+
     }
 
     ValueAxis {
         id: axisY2
+        color: "red"
+        titleText: "Ch2"
+        labelsAngle: 90
+        labelsColor: "red"
     }
     ValueAxis {
         id: axisY3
+        color: "green"
+        titleText: "Ch3"
+        labelsAngle: 90
+        labelsColor: "green"
+
     }
     ValueAxis {
         id: axisY4
+        color: "yellow"
+        titleText: "Ch4"
+        labelsAngle: 90
+        labelsColor: "yellow"
     }
     ValueAxis {
         id: axisY5
+        color: "magenta"
+        titleText: "Ch5"
+        labelsAngle: 90
+        labelsColor: "magenta"
     }
     ValueAxis {
         id: axisY6
+        color: "orange"
+        titleText: "Ch6"
+        labelsAngle: 90
+        labelsColor: "orange"
     }
 
     ValueAxis {

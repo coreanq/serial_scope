@@ -313,7 +313,7 @@ void DataSource::update(QAbstractSeries *series, int lineIndex)
                 pt.setX(i);
                 if( i >= m_screenXCount - dataTotalCount)
                 {
-                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )  + m_yOffsets[lineIndex]] )  * m_yScales[lineIndex] ) ;
+                    pt.setY( ( m_data[lineIndex][i - (m_screenXCount - dataTotalCount )]  + m_yOffsets[lineIndex] )  * m_yScales[lineIndex] ) ;
                 }
                 else
                 {
